@@ -53,7 +53,7 @@ export default function Tasks() {
                 password : "adadsada" , 
             }
             
-            await fetch("/api/users/index" , {method : "POST" , body : JSON.stringify(userData)});
+            await fetch("/api/users/" , {method : "POST" , body : JSON.stringify(userData)});
         };
     
         fetchUsers();
