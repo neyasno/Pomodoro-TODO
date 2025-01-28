@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = "mongodb://localhost:27017/mydatabase";
+const MONGODB_URI = "mongodb://127.0.0.1:27017/todo";
 
 const dbConnect = async () => {
   if (mongoose.connections[0].readyState) {

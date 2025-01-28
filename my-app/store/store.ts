@@ -3,11 +3,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 
 import timeReducer from './slices/timeSlice'
+import userReducer from './slices/userSlice'
 import { thunk } from 'redux-thunk';
 
 export const store = configureStore({
   reducer: {
-    time : timeReducer
+    time : timeReducer ,
+    user : userReducer , 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk)
 });
