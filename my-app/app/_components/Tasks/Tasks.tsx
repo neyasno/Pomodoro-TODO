@@ -47,16 +47,16 @@ const testData : TaskProps[] = [
 export default function Tasks() {
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            const userData = {
-                email:"sdadadadsad",
-                password : "adadsada" , 
-            }
+        const fetchTasks = async () => {
+
+            const token = localStorage.getItem("token");
             
-            await fetch("/api/users/" , {method : "POST" , body : JSON.stringify(userData)});
+            await fetch("/api/tasks/" , {method : "GET" , headers : {
+                "authorisation" : `Bearer ${token}`
+            }});
         };
     
-        fetchUsers();
+        fetchTasks();
         }, []);
 
   return (

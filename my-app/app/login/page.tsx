@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
+
 export default function Page() {
 
     const [email , setEmail] = useState('');
@@ -36,8 +37,12 @@ export default function Page() {
             };
         
             fetchUsers().then((res)=>{
-                console.log("Login success!")
-                localStorage.setItem( "token" , res['token'])
+                console.log("Login success!" + res.token)
+                
+                document.cookie = `token=${res.token}; path=/; max-age=86400; Secure`;
+                localStorage.clear()
+                localStorage.setItem("token" , res.token)
+
                 router.push("/")
                 
             }).catch((err)=>{

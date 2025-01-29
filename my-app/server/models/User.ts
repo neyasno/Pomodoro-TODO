@@ -12,11 +12,17 @@ interface IUser extends Document {
   tasks : Task[];
 }
 
+const TaskSchema = new Schema<Task>({
+  title: { type: String, required: true },
+  text: { type: String, required: true },
+  isActive: { type: Boolean, default: true }
+});
+
 const UserSchema: Schema = new Schema(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    tasks : {type : String},
+    tasks : {type : [TaskSchema] , default : [] },
     
   },
   { timestamps: true }

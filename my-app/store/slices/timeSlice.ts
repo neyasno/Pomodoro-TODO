@@ -1,17 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export enum ETimerStates{
+    WORKING,
+    RESTING,
+    STOP
+}
+
 type time = {
     time : string,
     minutes : number , 
     seconds : number , 
-    isActive : boolean
+    timerState : ETimerStates
 }
 
 const initialState : time = {
     time : "25:00" ,
     minutes : 25 , 
     seconds : 0 , 
-    isActive : false
+    timerState : ETimerStates.STOP
 }
 
 const timeSlice = createSlice({
@@ -19,10 +25,10 @@ const timeSlice = createSlice({
     initialState: initialState ,
     reducers : {
         startTimer : (state) =>{
-            state.isActive = true
+            state.timerState = ETimerStates.WORKING
         },
         stopTimer : (state) =>{
-            state.isActive = false
+            state.timerState = ETimerStates.STOP
         },
         tick : (state) =>{
             if(state.seconds !==0){
@@ -36,7 +42,7 @@ const timeSlice = createSlice({
                     state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
                 }
                 else{
-                    state.isActive = false
+                    state.timerState = ETimerStates.STOP
                     state.minutes = 25
                     state.seconds = 0
                     state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
@@ -47,6 +53,11 @@ const timeSlice = createSlice({
             state.minutes = 25
             state.seconds = 0
             state.time = "25:00"
+        },
+        startRest : (state) => {
+            state.minutes = 5
+            state.seconds = 0
+            state.time = "5:00"
         }
     }
 })
