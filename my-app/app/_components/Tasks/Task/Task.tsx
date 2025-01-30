@@ -7,6 +7,7 @@ import React from 'react'
 export type TaskProps = {
     title : string , 
     text? : string , 
+    deadline? :  Date ,
     isActive : boolean , 
 }
 

@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import Task, { TaskProps } from './Task/Task'
+import TaskForm from './TaskForm/TaskForm';
 
 const testData : TaskProps[] = [
     {
@@ -46,22 +47,53 @@ const testData : TaskProps[] = [
 
 export default function Tasks() {
 
+    const [ tasks , setTasks ] = useState<TaskProps[]>([]);
+    //const [isLoanding, setIsLoanding] = useState(true);
+
     useEffect(() => {
         const fetchTasks = async () => {
 
             const token = localStorage.getItem("token");
             
-            await fetch("/api/tasks/" , {method : "GET" , headers : {
-                "authorisation" : `Bearer ${token}`
+            const response = await fetch("/api/tasks/" , {method : "GET" , headers : {
+                "authorization" : `Bearer ${token}`
             }});
+            console.log()
+
+            if(!response.ok){
+                console.log("Error fetching tasks!")
+            }
+
+            const data = await response.json();
+            console.log(data)
+            setTasks(data);
+
         };
     
-        fetchTasks();
-        }, []);
+        fetchTasks().then((res)=>{
+            console.log(res)
+        });
+    }, []);
 
-  return (
-    <ul className='max-w-max'>
-        {testData.map( (task , index) => <Task text={task.text} title={task.title} isActive={task.isActive} key={index}/>)}
-    </ul>
-  )
+
+    if(tasks.length){
+        return (
+            <div className='max-w-max'>
+                <TaskForm/>
+                <ul className='max-w-max'>
+                    {testData.map( (task , index) => <Task text={task.text} title={task.title} isActive={task.isActive} key={index}/>)}
+                </ul>
+            </div>
+        )
+    }
+    else{
+        return (
+            <div className='max-w-max'>
+                <TaskForm/>
+                <p>There is no tasks</p>
+            </div>
+            
+        )
+    }
+  
 }

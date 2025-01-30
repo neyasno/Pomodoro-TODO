@@ -1,30 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { JWT_SECRET } from "./app/_utils/jwt";
-import jwt from "jsonwebtoken"
+import { isAuthenticated} from "./_server/utils/jwt";
 
 export const runtime = "nodejs";
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
 
-    const token = req.cookies.get("token")?.value;
+    // const token = req.cookies.get("token")?.value;
+    // console.log("Middleware token " + token)
 
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
+    // if (!token) {
+    //   return NextResponse.redirect(new URL('/login', req.url));
+    // }
 
-    try {
+    // try {
+    //   const isAuntificated = await isAuthenticated(req);
+    //   if(isAuntificated){
+    //     console.log("Verification successed!!!")
+    //     return NextResponse.next();
+    //   }
+    //   else{
+    //     console.log("Err isAUTH")
+    //   }
 
-      jwt.verify(token, JWT_SECRET);
-      return NextResponse.next();
+    // } catch (error) {
 
-    } catch (error) {
-
-      console.log(error)
-      return NextResponse.redirect(new URL('/login', req.url));
+    //   console.log(error)
+    //   return NextResponse.redirect(new URL('/login', req.url));
       
-    }
+    // }
 }
 
 export const config = { 
-    matcher: ["/" , "/api/tasks"]
+    matcher: ["/" ]
 };

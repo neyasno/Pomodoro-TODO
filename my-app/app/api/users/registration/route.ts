@@ -1,6 +1,6 @@
 
-import dbConnect from "../../../server/dbConnect";
-import { User } from "../../../server/models/User";
+import dbConnect from "@/_server/dbConnect";
+import { User } from "@/_server/models/User";
 import { NextResponse } from "next/server";
 
 export async function GET() {

@@ -24,14 +24,14 @@ const userSlice = createSlice({
     name : "user" ,
     initialState: initialState ,
     reducers : {
-        changeIsLogined : (state) => {
-            state.isLogined = !state.isLogined
+        setIsLogined : (state , action) => {
+            state.isLogined = action.payload
         },
         setTasks : (state , action) =>{
             state.tasks = action.payload
-        }
+        },
     }
 })
 
-export const { changeIsLogined , setTasks } = userSlice.actions;
+export const { setIsLogined , setTasks } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,4 +1,6 @@
 'use client'
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
@@ -9,10 +11,15 @@ export default function Page() {
     const [password_confirm , setPasswordConfirm] = useState('');
     const [error , setError] = useState('');
 
+    const [isLoanding , setIsLoanding] = useState(false);
+
     const router = useRouter();
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
+        setError("")
+        if(isLoanding) return;
+
         if(password === password_confirm){
             const fetchUsers = async () => {
                 const userData = {
@@ -21,7 +28,7 @@ export default function Page() {
                 }
                 
                 try{
-                    const response = await fetch("/api/users/" , {method : "POST" , body : JSON.stringify(userData)});
+                    const response = await fetch("/api/users/registration" , {method : "POST" , body : JSON.stringify(userData)});
 
                     if(!response.ok){
                         const errorData = await response.json();
@@ -31,17 +38,18 @@ export default function Page() {
                     return await response.json();
                 }
                 catch (error) {
-                    throw new Error(`Ошибка при регистрации: ${error}`);
+                    throw new Error(`Registration error: ${error}`);
                 }
             };
-        
+            setIsLoanding(true)
             fetchUsers().then((res)=>{
                 console.log("Registration success!" , res)
-                router.push("/")
+                router.push("/login")
                 
             }).catch((err)=>{
                 console.log("Registration error!" , err)
-                setError("User exist")
+                setError("Registration error")
+                setIsLoanding(false)
             });
         }
         else{
@@ -52,16 +60,27 @@ export default function Page() {
     
   return (
     <div className='w-full flex items-center justify-center'>
-        <form action="" className='w-1/4 flex flex-col items-center gap-4'>
+        <form action="" className='lg:w-1/4 flex flex-col items-center gap-4 
+                                   md:w-1/3'>
+
         <h1 className='text-3xl'>Registration</h1>
         <input type="text" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={email} placeholder='Email' 
             onChange={ e => setEmail(e.target.value)}/>
+
         <input type="password" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={password} placeholder='Password' 
             onChange={ e => setPassword(e.target.value)}/>
+
         <input type="password" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={password_confirm} placeholder='Confirm password' 
             onChange={ e => setPasswordConfirm(e.target.value)}/>
-        <button className='px-5 py-2 border-2 border-white' onClick={handleClick}>Create</button>
+
+        {isLoanding ? 
+            <Image alt='' src='/load.gif' width={50} height={50}/> 
+            : <button className='px-5 py-2 border-2 border-white' onClick={handleClick}>Create</button> 
+        }
+        
+        <Link href='/login'> <p className=''>Already have account? <u>Login</u></p></Link>
         <p className='text-center text-lg p-2 text-red-700'>{error}</p>
+
         </form>
     </div>
   )

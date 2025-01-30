@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 type Task ={
     title : string ,
     text : string , 
+    deadline : Date ,
     isActive : boolean 
 }
 

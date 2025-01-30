@@ -1,16 +1,20 @@
 
-import { verifyToken } from "@/app/_utils/jwt";
+import { isAuthenticated } from "@/_server/utils/jwt";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
-    const body = await req.json();
-
-    verifyToken(body['token']);
-    console.log("Token verified")
-    return NextResponse.json({ message : "Success"}, { status: 200 });
+    const userEmail = await isAuthenticated(req);
+    if(userEmail){
+      console.log("Token verified")
+      return NextResponse.json({ message : "Success"}, { status: 200 });
+    }
+    
+    console.log("Token not verified")
+    return NextResponse.json({ error: `Verification error!` }, { status: 500 });
 
   } catch (error) {
+    console.log("Token not verified")
     return NextResponse.json({ error: `Verification error: ${error}` }, { status: 500 });
   }
 }

@@ -7,7 +7,9 @@ export default function Home() {
 
   return (
     <div className="flex flex-col justify-center m-auto">
-      <div className="w-1/2"><Timer/></div>
+      <div className="w-1/2">
+        <Timer/>
+      </div>
       <Tasks/>
     </div>
   );

@@ -1,42 +1,56 @@
 
-import dbConnect from "../../../server/dbConnect";
-import { User } from "../../../server/models/User";
+import { isAuthenticated } from "@/_server/utils/jwt";
+import dbConnect from "../../../_server/dbConnect";
+import { User } from "../../../_server/models/User";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "@/app/_utils/jwt";
 
 export async function GET(req : NextRequest) {
   try {
     await dbConnect();
 
-    const authHeader = req.headers.get("authorization");
-    const token = authHeader?.split(" ")[1] || req.cookies.get("token")?.value; 
-
-    if (!token) {
-        return NextResponse.json({ message: "Unauthorized: No token" }, { status: 401 });
-    }
-    let userEmail = '';
-    try {
-        const decoded  = jwt.verify(token, JWT_SECRET) as { email: string, iat: number, exp: number };
-        userEmail = decoded.email;
-        console.log("JWT проверен, вход разрешен.");
-        console.log(decoded)
-        
-    } catch (error) {
-        console.error("Ошибка проверки JWT:", error);
-
+    const userEmail = await isAuthenticated(req);
+    console.log(userEmail)
+    if(userEmail){
+        const user = await User.findOne({email : userEmail})
+        console.log(user.tasks)
+        return NextResponse.json(user.tasks, { status: 200 });
+    } 
+    else{
+        console.error("Error JWT!");
         return NextResponse.json({ message: "jwt error" }, { status: 500 });
     }
-
-    const tasks = await User.findOne({email : userEmail})
-
-    console.log(tasks)
-
-    return NextResponse.json(tasks, { status: 200 });
-
 
   } catch (error) {
     return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
   }
 }
+
+export async function POST(req : NextRequest) {
+    try {
+        await dbConnect();
+
+        const userEmail = await isAuthenticated(req);
+        if (!userEmail) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
+        const user = await User.findOne({email : userEmail})
+        const body = await req.json();
+        
+        const newTask = {
+            title : body.title,
+            text : body.title,
+            deadline : body.title,
+            isActive : body.title
+        }
+        user.tasks.push(newTask)
+        user.save()
+
+        return NextResponse.json(user.tasks, { status: 200 });
+
+  
+    } catch (error) {
+        return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
+    }
+  }
 
