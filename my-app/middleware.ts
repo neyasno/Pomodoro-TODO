@@ -6,23 +6,25 @@ export const runtime = "nodejs";
 
 export function middleware(req: NextRequest) {
 
-    console.log("Middleware!!!")
-
     const token = req.cookies.get("token")?.value;
 
-  // if (!token) {
-  //   return NextResponse.redirect(new URL('/login', req.url));
-  // }
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
 
-  // try {
-  //   jwt.verify(token, JWT_SECRET);
-  //   return NextResponse.next();
-  // } catch (error) {
-  //   console.log(error)
-  //   return NextResponse.redirect(new URL('/login', req.url));
-  // }
+    try {
+
+      jwt.verify(token, JWT_SECRET);
+      return NextResponse.next();
+
+    } catch (error) {
+
+      console.log(error)
+      return NextResponse.redirect(new URL('/login', req.url));
+      
+    }
 }
 
 export const config = { 
-    matcher: "/"
+    matcher: ["/" , "/api/tasks"]
 };
