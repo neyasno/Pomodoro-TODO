@@ -39,9 +39,9 @@ export async function POST(req : NextRequest) {
         
         const newTask = {
             title : body.title,
-            text : body.title,
-            deadline : body.title,
-            isActive : body.title
+            text : body.text,
+            deadline : body.date,
+            isActive : true
         }
         user.tasks.push(newTask)
         user.save()

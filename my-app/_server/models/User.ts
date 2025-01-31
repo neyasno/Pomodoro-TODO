@@ -16,7 +16,8 @@ interface IUser extends Document {
 const TaskSchema = new Schema<Task>({
   title: { type: String, required: true },
   text: { type: String, required: true },
-  isActive: { type: Boolean, default: true }
+  isActive: { type: Boolean, default: true } , 
+  deadline : { type : Date },
 });
 
 const UserSchema: Schema = new Schema(

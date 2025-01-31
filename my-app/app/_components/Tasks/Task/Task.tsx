@@ -11,8 +11,9 @@ export type TaskProps = {
     isActive : boolean , 
 }
 
-export default function Task({title , text , isActive}:TaskProps) {
+export default function Task({title , text , isActive ,deadline}:TaskProps) {
     const dispatch = useAppDispatch();
+    console.log("Deadline --" + deadline)
 
     return (
         <li className='flex p-10 gap-3'>
@@ -23,7 +24,10 @@ export default function Task({title , text , isActive}:TaskProps) {
             </div>
             <div className='flex justify-between items-center w-full gap-10'>
                 <div className='flex flex-col'>
-                    <p className='text-2xl'>{title}</p>
+                    <div className='w-full flex justify-between'>
+                        <p className='text-2xl'>{title}</p>
+                        <p>{deadline?.getHours()}</p>
+                    </div>
                     <p>{text}</p>
                 </div>
                 {isActive && 

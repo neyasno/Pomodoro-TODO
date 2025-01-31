@@ -40,9 +40,12 @@ export default function TaskForm() {
             onChange={ e => setTitle(e.target.value)}/>
         <input type="text" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={text} placeholder='Text' 
             onChange={ e => setText(e.target.value)}/>
-        <input type="datetime-local" className='border-white p-2  bg-transparent'  placeholder='Data' onChange={e => {
-            console.log(setDate(new Date(e.target.value)))
-        }} />
+        <div className='flex gap-2 items-center'>
+            <p>Deadline : </p>
+            <input type="datetime-local" className='border-white p-2  bg-transparent'  placeholder='Data' onChange={e => {
+                console.log(setDate(new Date(e.target.value)))
+            }} />
+        </div>
         <button className='py-3 px-5 border-white border-2' onClick={createTask}> Create </button>
     </form>
   )

@@ -6,49 +6,10 @@ import React, { useEffect, useState } from 'react'
 import Task, { TaskProps } from './Task/Task'
 import TaskForm from './TaskForm/TaskForm';
 
-const testData : TaskProps[] = [
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool",
-        isActive  : true
-    },
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool dasda dasdasda sad asda d asd asd as das dasdasda sda das dasd asdas dsa das as  as dsa das das d ",
-        isActive  : true 
-    },
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool dasda dasdasda sad asda d asd asd as das dasdasda sda das dasd asdas dsa das as  as dsa das das d ",
-        isActive  : false 
-    },
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool",
-        isActive  : false 
-    },
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool",
-        isActive  : false 
-    },
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool",
-        isActive  : false 
-    },
-    {
-        title: "Wash house" ,
-        text : "Wash house big and cool",
-        isActive  : false 
-    },
-    
-]
-
 export default function Tasks() {
 
     const [ tasks , setTasks ] = useState<TaskProps[]>([]);
-    //const [isLoanding, setIsLoanding] = useState(true);
+    const [formVisability , setFormVisability] = useState(false);
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -75,25 +36,28 @@ export default function Tasks() {
         });
     }, []);
 
-
+    let content  = <p>There is no tasks</p>
     if(tasks.length){
-        return (
-            <div className='max-w-max'>
-                <TaskForm/>
-                <ul className='max-w-max'>
-                    {testData.map( (task , index) => <Task text={task.text} title={task.title} isActive={task.isActive} key={index}/>)}
-                </ul>
-            </div>
-        )
+
+        content =   
+        <ul className='w-max'>
+            {tasks.map( (task , index) => <Task text={task.text} title={task.title} isActive={task.isActive} deadline={task.deadline} key={index}/>)}
+        </ul>
+
     }
-    else{
-        return (
-            <div className='max-w-max'>
-                <TaskForm/>
-                <p>There is no tasks</p>
+
+    return (
+        <div className='w-full max-w-3xl flex flex-col items-center justify-center gap-2'>
+            <div className='flex justify-between w-full px-8'>
+                <div></div>
+                <button 
+                    className='py-2 px-4 border-2 border-white w-max' 
+                    onClick={() => setFormVisability(!formVisability)}>{formVisability ? <p>Close</p> : <p>Add task</p>}
+                </button>
             </div>
-            
-        )
-    }
+            <div className={`flex overflow-hidden transition-all duration-500 ${formVisability ? "h-56" : "h-0"}`}><TaskForm/></div>
+            {content}
+        </div>  
+    )
   
 }
