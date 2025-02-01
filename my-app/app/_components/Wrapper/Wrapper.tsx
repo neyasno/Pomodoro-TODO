@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/store";
 import { setIsLogined } from "@/store/slices/userSlice";
-import Image from 'next/image';
+import Loading from '../common/Loading';
+import fetchApi from '@/utils/fetchApi';
 
 export default function Wrapper( {children }:{ children : ReactNode}) {
 
@@ -15,17 +16,8 @@ export default function Wrapper( {children }:{ children : ReactNode}) {
 
     useEffect(()=>{
         const verifyRequest = async () => {
-        const token = localStorage.getItem('token')
-
-        console.log("STORED TOKEN : " + token)
-
-        const response = await fetch("/api/users/verification" , {method : "GET" , headers : {
-            authorization : `Bearer ${token}`
-        }});
-
-        if(!response.ok)
-            throw new Error("Verification failed");
-        };
+            await fetchApi("/api/users/verification" , "GET");
+        }
 
         verifyRequest().then(()=>{
 
@@ -44,14 +36,14 @@ export default function Wrapper( {children }:{ children : ReactNode}) {
 
     if(isLoanding){
         return (
-            <div className='w-full p-10'>
-                <Image alt='' src='/load.gif' width={50} height={50}/> 
+            <div className='w-full flex items-center p-10'>
+                <Loading/>
             </div>
         )
     }
     else{
         return (
-            <div>{children}</div>
+            <>{children}</>
           )
     }
 

@@ -1,7 +1,7 @@
 
-import { isAuthenticated } from "@/_server/utils/jwt";
+import { isAuthenticated } from "@/utils/jwt";
 import dbConnect from "../../../_server/dbConnect";
-import { User } from "../../../_server/models/User";
+import { IUser, User } from "../../../_server/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req : NextRequest) {
@@ -40,7 +40,7 @@ export async function POST(req : NextRequest) {
         const newTask = {
             title : body.title,
             text : body.text,
-            deadline : body.date,
+            deadline : body.deadline,
             isActive : true
         }
         user.tasks.push(newTask)
@@ -52,5 +52,56 @@ export async function POST(req : NextRequest) {
     } catch (error) {
         return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
     }
+}
+
+export async function PUT(req : NextRequest) {
+  try {
+      await dbConnect();
+
+      const userEmail = await isAuthenticated(req);
+      if (!userEmail) {
+          return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+
+      const user = await User.findOne({email : userEmail})
+      const body = await req.json();
+      const task_id = body._id
+    
+      const task = user.tasks.find((task : {_id : string}) => task._id.toString() === task_id) as IUser["tasks"][number];
+      task.isActive = false
+      user.save()
+
+      return NextResponse.json(user.tasks, { status: 200 });
+
+
+  } catch (error) {
+      return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
   }
+}
+
+export async function DELETE(req : NextRequest) {
+    try {
+        await dbConnect();
+  
+        const userEmail = await isAuthenticated(req);
+        if (!userEmail) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+  
+        const user = await User.findOne({email : userEmail})
+        const body = await req.json();
+        const task_id = body._id
+        
+        user.tasks = user.tasks.filter((task : {_id:string}) => task._id.toString() !== task_id)
+        user.save()
+  
+        return NextResponse.json(user.tasks, { status: 200 });
+  
+  
+    } catch (error) {
+        return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
+    }
+  }
+
+
 

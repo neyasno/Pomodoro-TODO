@@ -1,5 +1,5 @@
 
-import { isAuthenticated } from "@/_server/utils/jwt";
+import { isAuthenticated } from "@/utils/jwt";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {

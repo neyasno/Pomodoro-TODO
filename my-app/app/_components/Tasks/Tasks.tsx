@@ -25,9 +25,8 @@ export default function Tasks() {
                 console.log("Error fetching tasks!")
             }
 
-            const data = await response.json();
-            console.log(data)
-            setTasks(data);
+            const data : TaskProps[] = await response.json();
+            setTasks(data.sort((a,b)=> Number(a.deadline!) - Number(b.deadline!)));
 
         };
     
@@ -40,8 +39,17 @@ export default function Tasks() {
     if(tasks.length){
 
         content =   
-        <ul className='w-max'>
-            {tasks.map( (task , index) => <Task text={task.text} title={task.title} isActive={task.isActive} deadline={task.deadline} key={index}/>)}
+        <ul className='w-full'>
+            {tasks.map( (task , index) => 
+                <Task _id={task._id} 
+                      text={task.text} 
+                      title={task.title} 
+                      isActive={task.isActive} 
+                      deadline={task.deadline} 
+                      key={index}
+                      setTasks={setTasks}
+                      />
+            )}
         </ul>
 
     }
@@ -55,7 +63,7 @@ export default function Tasks() {
                     onClick={() => setFormVisability(!formVisability)}>{formVisability ? <p>Close</p> : <p>Add task</p>}
                 </button>
             </div>
-            <div className={`flex overflow-hidden transition-all duration-500 ${formVisability ? "h-56" : "h-0"}`}><TaskForm/></div>
+            <div className={`flex overflow-hidden transition-all duration-500 ${formVisability ? "h-56" : "h-0"}`}><TaskForm setTasks={setTasks}/></div>
             {content}
         </div>  
     )

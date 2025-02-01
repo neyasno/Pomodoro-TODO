@@ -4,8 +4,11 @@ import { useAppDispatch , useAppSelector } from '@/store/store'
 import React, { useEffect } from 'react'
 
 export default function Timer() {
+
     const dispatch = useAppDispatch();
+    
     const state =  useAppSelector((state) => state.time);
+    
     useEffect(()=>{
         console.log("UseEffeck!")
         if(state.timerState == ETimerStates.WORKING){
@@ -16,6 +19,7 @@ export default function Timer() {
 
         }
     } ,[state.timerState])
+
   return (
     <div className=' flex flex-col text-center'>
         <h1 className=' text-7xl'>{state.time}</h1>

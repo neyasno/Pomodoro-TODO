@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAuthenticated} from "./_server/utils/jwt";
+import { isAuthenticated} from "./utils/jwt";
 
 export const runtime = "nodejs";
 

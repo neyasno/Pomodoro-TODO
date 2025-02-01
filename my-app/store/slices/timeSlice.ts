@@ -10,13 +10,19 @@ type time = {
     time : string,
     minutes : number , 
     seconds : number , 
+    rest_time : string ,
+    rest_minutes : number ,
+    rest_seconds : number ,
     timerState : ETimerStates
 }
 
 const initialState : time = {
-    time : "25:00" ,
-    minutes : 25 , 
-    seconds : 0 , 
+    time : "0:05" ,
+    minutes : 0 , 
+    seconds : 5 ,
+    rest_time : '0:03' ,
+    rest_minutes : 0 ,
+    rest_seconds : 3 ,
     timerState : ETimerStates.STOP
 }
 
@@ -25,7 +31,12 @@ const timeSlice = createSlice({
     initialState: initialState ,
     reducers : {
         startTimer : (state) =>{
-            state.timerState = ETimerStates.WORKING
+            if(state.time==initialState.rest_time){
+                state.timerState = ETimerStates.RESTING 
+            }
+            else{
+                state.timerState = ETimerStates.WORKING 
+            }
         },
         stopTimer : (state) =>{
             state.timerState = ETimerStates.STOP
@@ -42,25 +53,23 @@ const timeSlice = createSlice({
                     state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
                 }
                 else{
-                    state.timerState = ETimerStates.STOP
-                    state.minutes = 25
-                    state.seconds = 0
-                    state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
+                    if(state.timerState == ETimerStates.WORKING){
+                        state.minutes = initialState.rest_minutes
+                        state.seconds = initialState.rest_seconds
+                        state.timerState = ETimerStates.STOP
+                        state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
+                    }
+                    else if (state.timerState == ETimerStates.RESTING){
+                        state.minutes = initialState.minutes
+                        state.seconds = initialState.seconds
+                        state.timerState = ETimerStates.STOP
+                        state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
+                    } 
                 }
             }
         }, 
-        resetTimer : (state) =>{
-            state.minutes = 25
-            state.seconds = 0
-            state.time = "25:00"
-        },
-        startRest : (state) => {
-            state.minutes = 5
-            state.seconds = 0
-            state.time = "5:00"
-        }
     }
 })
 
-export const { startTimer , tick ,resetTimer , stopTimer } = timeSlice.actions;
+export const { startTimer , tick , stopTimer } = timeSlice.actions;
 export default timeSlice.reducer;

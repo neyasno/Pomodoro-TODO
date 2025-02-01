@@ -1,5 +1,5 @@
 
-import { generateToken } from "@/_server/utils/jwt";
+import { generateToken } from "@/utils/jwt";
 import dbConnect from "../../../../_server/dbConnect";
 import { User } from "../../../../_server/models/User";
 import { NextResponse } from "next/server";

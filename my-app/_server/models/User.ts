@@ -1,13 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-type Task ={
+export type Task ={
     title : string ,
     text : string , 
-    deadline : Date ,
+    deadline : string ,
     isActive : boolean 
 }
 
-interface IUser extends Document {
+export interface IUser extends Document {
   email: string;
   password : string;
   tasks : Task[];
@@ -17,7 +17,7 @@ const TaskSchema = new Schema<Task>({
   title: { type: String, required: true },
   text: { type: String, required: true },
   isActive: { type: Boolean, default: true } , 
-  deadline : { type : Date },
+  deadline : { type : String , required : false , default : "no dedline" },
 });
 
 const UserSchema: Schema = new Schema(
