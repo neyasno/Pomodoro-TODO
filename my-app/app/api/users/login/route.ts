@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const existingUser = await User.findOne({ email: body.email , password : body.password });
     if(existingUser){
       console.log("User exist")
-      return NextResponse.json({ message: "Success" , token : await generateToken({ email: body.email } ,"5 min") }, { status: 200 });
+      return NextResponse.json({ message: "Success" , token : await generateToken({ email: body.email } ,"2 h") }, { status: 200 });
     }
     else{
         console.log("User not exist")

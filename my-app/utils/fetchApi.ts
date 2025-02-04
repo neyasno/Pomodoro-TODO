@@ -1,23 +1,41 @@
 
 type RequestMethod = "GET" | "POST" | "PUT" | "DELETE"
 
-const fetchApi = async ( path : string , method : RequestMethod )=>{
+const fetchApi = async ( path : string , method : RequestMethod , body = {} )=>{
 
     const token = localStorage.getItem('token')
 
-    const response = await fetch( path , 
-        {
-            method , 
-            headers : {
-                authorization : `Bearer ${token}`
+    let response : Response
+
+    if(method === "GET"){
+        response = await fetch( path , 
+            {
+                method , 
+                headers : {
+                    authorization : `Bearer ${token}`
+                },
             }
-        }
-    );
+        );
+    }
+    else{
+        response = await fetch( path , 
+            {
+                method , 
+                headers : {
+                    authorization : `Bearer ${token}`
+                },
+                body : JSON.stringify(body)
+            }
+        );
+    }
+
+    
 
     if(!response.ok){
         throw new Error("Fetch Error:");
     }
     
+    return response.json()
 };
 
 

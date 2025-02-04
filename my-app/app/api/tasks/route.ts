@@ -36,15 +36,20 @@ export async function POST(req : NextRequest) {
 
         const user = await User.findOne({email : userEmail})
         const body = await req.json();
-        
+
         const newTask = {
             title : body.title,
             text : body.text,
             deadline : body.deadline,
-            isActive : true
-        }
+            isActive : true , 
+            steps_amount : body.steps_amount , 
+            steps : 0,
+        };
+
         user.tasks.push(newTask)
-        user.save()
+
+        console.log(newTask)
+        await user.save()
 
         return NextResponse.json(user.tasks, { status: 200 });
 

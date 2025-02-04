@@ -1,3 +1,4 @@
+import fetchApi from "@/utils/fetchApi";
 import { createSlice } from "@reduxjs/toolkit";
 
 export enum ETimerStates{
@@ -13,7 +14,8 @@ type time = {
     rest_time : string ,
     rest_minutes : number ,
     rest_seconds : number ,
-    timerState : ETimerStates
+    timerState : ETimerStates ,
+    currentTask : string,
 }
 
 const initialState : time = {
@@ -23,7 +25,8 @@ const initialState : time = {
     rest_time : '0:03' ,
     rest_minutes : 0 ,
     rest_seconds : 3 ,
-    timerState : ETimerStates.STOP
+    timerState : ETimerStates.STOP , 
+    currentTask : "",
 }
 
 const timeSlice = createSlice({
@@ -40,6 +43,9 @@ const timeSlice = createSlice({
         },
         stopTimer : (state) =>{
             state.timerState = ETimerStates.STOP
+        },
+        setCurrentTask : (state , action) => {
+            state.currentTask = action.payload
         },
         tick : (state) =>{
             if(state.seconds !==0){
@@ -58,6 +64,10 @@ const timeSlice = createSlice({
                         state.seconds = initialState.rest_seconds
                         state.timerState = ETimerStates.STOP
                         state.time = state.minutes + ":" + ((state.seconds + "").length === 2 ? state.seconds : '0'+ state.seconds )
+                    
+                        timeSlice.caseReducers.commitTaskProgression(state);
+
+                        state.currentTask = ""
                     }
                     else if (state.timerState == ETimerStates.RESTING){
                         state.minutes = initialState.minutes
@@ -68,8 +78,14 @@ const timeSlice = createSlice({
                 }
             }
         }, 
+        commitTaskProgression : (state) =>{
+            
+            const task_id = state.currentTask
+            console.log(task_id)
+            fetchApi("/api/tasks/progression" , "PUT" , {task_id})
+        }
     }
 })
 
-export const { startTimer , tick , stopTimer } = timeSlice.actions;
+export const { startTimer , tick , stopTimer , setCurrentTask } = timeSlice.actions;
 export default timeSlice.reducer;

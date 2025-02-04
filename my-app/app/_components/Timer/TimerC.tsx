@@ -42,7 +42,7 @@ class Timer extends Component<TimerProps> {
   render() {
     const { time, timerState } = this.props;
     return (
-      <div className="flex flex-col text-center">
+      <div className="flex flex-col text-center border-2 border-black dark:border-white rounded-full px-10 py-14">
         <h1 className="text-7xl">{time}</h1>
         {timerState === ETimerStates.WORKING && <p>Working</p>}
         {timerState === ETimerStates.RESTING && <p>Rest</p>}

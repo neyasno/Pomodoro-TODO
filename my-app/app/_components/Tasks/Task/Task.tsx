@@ -1,8 +1,10 @@
 'use client'
 
-import { startTimer } from '@/store/slices/timeSlice';
+import { setCurrentTask, startTimer } from '@/store/slices/timeSlice';
 import { useAppDispatch } from '@/store/store'
 import React, { useMemo } from 'react'
+import Button from '../../common/Button';
+import StepsIndicator from './components/StepsIndicator';
 
 export type TaskProps = {
     _id : string ,
@@ -10,6 +12,8 @@ export type TaskProps = {
     text : string , 
     deadline :  string ,
     isActive : boolean , 
+    steps_amount : number , 
+    steps : number ,
     setTasks : React.Dispatch<React.SetStateAction<TaskProps[]>>
 }
 
@@ -20,7 +24,9 @@ const calculatePeriod = (deadline : string) =>{
     return Math.round( period / (1000 * 60 * 60 * 24));  
 }
 
-export default function Task({_id ,title , text , isActive ,deadline , setTasks}:TaskProps ) {
+export default function Task({_id ,steps , steps_amount,title , text , isActive ,deadline , setTasks}:TaskProps ) {
+
+    
     const dispatch = useAppDispatch();
 
     const period = useMemo(() => deadline ? calculatePeriod(deadline) : null, [deadline]);
@@ -75,17 +81,19 @@ export default function Task({_id ,title , text , isActive ,deadline , setTasks}
         };
     
         deleteTaskRequest().then((res)=>{
-            console.log(res)
+            console.log(res)            
         });
     }
 
     const handleStart = (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) =>{
         e.preventDefault()
+        dispatch(setCurrentTask(_id))
         dispatch(startTimer())
     }
+    
 
     return (
-        <li className=' w-full flex p-10 gap-3'>
+        <li className={`w-full flex p-10 gap-3 transition-all`}>
             <div className='flex items-center justify-center p-5'>
                 <div className={`rounded-full size-5 ${isActive ? 'bg-blue-400' : 'bg-gray-400'}`}>
 
@@ -94,15 +102,19 @@ export default function Task({_id ,title , text , isActive ,deadline , setTasks}
             <div className='flex justify-between items-center w-full gap-10'>
                 <div className='flex flex-col w-full'>
                     <div className='w-full flex justify-between'>
-                        <p className='text-2xl'>{title}</p>
+                        <div className='flex gap-2'>
+                            <p className='text-2xl'>{title}</p>
+                        </div>
+                        <StepsIndicator steps={steps} steps_amount={steps_amount} />
                         {isActive && <p>{deadline ? period + " day" : 'No deadline'}</p>}
+                        
                     </div>
                     <p>{text}</p>
                 </div>
                 {isActive && 
                 <div className='flex gap-2'>
-                    <button className='py-2 px-10 border-white border-2'onClick={handleStart}>Start</button>
-                    <button className='py-2 px-10 border-white border-2' onClick={disableTask}>Close</button>
+                    <Button text='Start' handleClick={handleStart}/>
+                    <Button text='Finish' handleClick={disableTask}/>
                 </div>
                 }
                 {!isActive &&

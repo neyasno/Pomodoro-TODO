@@ -1,8 +1,11 @@
 'use client'
+import { setIsLogined } from '@/store/slices/userSlice';
+import { useAppDispatch } from '@/store/store';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import TextInput from '../_components/common/TextInput';
 
 
 export default function Page() {
@@ -13,7 +16,10 @@ export default function Page() {
 
     const [isLoanding , setIsLoanding] = useState(false);
 
+    const dispatch = useAppDispatch()
+
     const router = useRouter();
+    
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
@@ -48,7 +54,8 @@ export default function Page() {
                 document.cookie = `token=${res.token}; path=/; max-age=60000; Secure`;
                 localStorage.setItem("token" , res.token)
 
-                router.push("/" , {})
+                dispatch(setIsLogined(true))
+                router.push("/")
                 
             }).catch((err)=>{
                 console.log("Login error!" , err)
@@ -68,12 +75,8 @@ export default function Page() {
                                     md:w-1/3'>
 
         <h1 className='text-3xl'>Login</h1>
-        <input type="text" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={email} placeholder='Email' 
-            onChange={ e => setEmail(e.target.value)}/>
-
-        <input type="password" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={password} placeholder='Password' 
-            onChange={ e => setPassword(e.target.value)}/>
-
+        <TextInput value={email} placeholder='E-mail' handleChange={setEmail}/>
+        <TextInput value={password} placeholder='Password' handleChange={setPassword} isPassword/>
         
         {isLoanding ? 
                 <Image alt='' src='/load.gif' width={50} height={50}/> 

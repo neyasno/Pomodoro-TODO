@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import TextInput from '../_components/common/TextInput';
 
 export default function Page() {
 
@@ -64,14 +65,9 @@ export default function Page() {
                                    md:w-1/3'>
 
         <h1 className='text-3xl'>Registration</h1>
-        <input type="text" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={email} placeholder='Email' 
-            onChange={ e => setEmail(e.target.value)}/>
-
-        <input type="password" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={password} placeholder='Password' 
-            onChange={ e => setPassword(e.target.value)}/>
-
-        <input type="password" className='px-3 py-2 border-2 border-white w-full bg-transparent' value={password_confirm} placeholder='Confirm password' 
-            onChange={ e => setPasswordConfirm(e.target.value)}/>
+        <TextInput value={email} placeholder='E-mail' handleChange={setEmail}/>
+        <TextInput value={password} placeholder='Password' handleChange={setPassword} isPassword/>
+        <TextInput value={password_confirm} placeholder='Password Confirmation' handleChange={setPasswordConfirm} isPassword/>
 
         {isLoanding ? 
             <Image alt='' src='/load.gif' width={50} height={50}/> 

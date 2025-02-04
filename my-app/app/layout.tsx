@@ -3,6 +3,7 @@ import "./globals.css";
 import ReduxProvider from "./_components/ReduxProvider";
 import Header from "./_components/Header/Header";
 import Wrapper from "./_components/Wrapper/Wrapper";
+import ThemeProvider from "./_components/ThemeProvider";
 
 
 export const metadata: Metadata = {
@@ -17,15 +18,17 @@ export default function RootLayout({
 }>) { 
 
   return (
-    <html lang="en">
-      <body className={` antialiased w-full  `}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={` antialiased w-full`}>
         <ReduxProvider>
-          <Wrapper>
-            <header><Header/></header>
-            <main className="w-full">
-              {children}
-            </main>
-          </Wrapper>
+          <ThemeProvider>
+            <Wrapper>
+              <header className="absolute w-full"><Header/></header>
+              <main className="w-full h-full pt-20">
+                {children}
+              </main>
+            </Wrapper>
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>

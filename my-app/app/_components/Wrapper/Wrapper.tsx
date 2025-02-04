@@ -15,13 +15,12 @@ export default function Wrapper( {children }:{ children : ReactNode}) {
     const dispatch = useAppDispatch();
 
     useEffect(()=>{
+
         const verifyRequest = async () => {
             await fetchApi("/api/users/verification" , "GET");
         }
 
         verifyRequest().then(()=>{
-
-            console.log("Verification completed")
             dispatch(setIsLogined(true))
             setIsLoanding(false)
 
@@ -36,14 +35,14 @@ export default function Wrapper( {children }:{ children : ReactNode}) {
 
     if(isLoanding){
         return (
-            <div className='w-full flex items-center p-10'>
+            <div className='w-full h-min-screen flex items-center p-10 '>
                 <Loading/>
             </div>
         )
     }
     else{
         return (
-            <>{children}</>
+            <div className='bg-white text-black dark:text-white dark:bg-black h-full'>{children}</div>
           )
     }
 

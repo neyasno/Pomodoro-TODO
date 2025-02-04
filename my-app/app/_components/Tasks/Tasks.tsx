@@ -1,46 +1,40 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 
 import Task, { TaskProps } from './Task/Task'
 import TaskForm from './TaskForm/TaskForm';
+import fetchApi from '@/utils/fetchApi';
+import Button from '../common/Button';
+import { useAppSelector } from '@/store/store';
 
-export default function Tasks() {
+function Tasks() {
 
     const [ tasks , setTasks ] = useState<TaskProps[]>([]);
     const [formVisability , setFormVisability] = useState(false);
+    const currentTask= useAppSelector(state => state.time.currentTask)
 
+    const fetchTasks = async () => {
+        const data : TaskProps[] = await fetchApi("/api/tasks/" , "GET")
+        setTasks(data);
+    };
     useEffect(() => {
-        const fetchTasks = async () => {
+        if(currentTask === ""){
+            fetchTasks();
+        }
+    }, [currentTask]);
 
-            const token = localStorage.getItem("token");
-            
-            const response = await fetch("/api/tasks/" , {method : "GET" , headers : {
-                "authorization" : `Bearer ${token}`
-            }});
-            console.log()
+    const sortedTasks = useMemo(() => {
+        return [...tasks].sort((a, b) => Number(a.deadline!) - Number(b.deadline!));
+      }, [tasks]);
 
-            if(!response.ok){
-                console.log("Error fetching tasks!")
-            }
-
-            const data : TaskProps[] = await response.json();
-            setTasks(data.sort((a,b)=> Number(a.deadline!) - Number(b.deadline!)));
-
-        };
-    
-        fetchTasks().then((res)=>{
-            console.log(res)
-        });
-    }, []);
-
-    let content  = <p>There is no tasks</p>
+    let tasks_content  = <p>There is no tasks</p>
     if(tasks.length){
 
-        content =   
+        tasks_content =   
         <ul className='w-full'>
-            {tasks.map( (task , index) => 
+            {sortedTasks.map( (task , index) => 
                 <Task _id={task._id} 
                       text={task.text} 
                       title={task.title} 
@@ -48,6 +42,8 @@ export default function Tasks() {
                       deadline={task.deadline} 
                       key={index}
                       setTasks={setTasks}
+                      steps_amount={task.steps_amount}
+                      steps={task.steps}
                       />
             )}
         </ul>
@@ -58,14 +54,17 @@ export default function Tasks() {
         <div className='w-full max-w-3xl flex flex-col items-center justify-center gap-2'>
             <div className='flex justify-between w-full px-8'>
                 <div></div>
-                <button 
-                    className='py-2 px-4 border-2 border-white w-max' 
-                    onClick={() => setFormVisability(!formVisability)}>{formVisability ? <p>Close</p> : <p>Add task</p>}
-                </button>
+                <Button handleClick={() => setFormVisability(!formVisability)} text={formVisability ? "Close" : "Add task"}/>
             </div>
-            <div className={`flex overflow-hidden transition-all duration-500 ${formVisability ? "h-56" : "h-0"}`}><TaskForm setTasks={setTasks}/></div>
-            {content}
+            <div className={`flex overflow-hidden transition-all duration-500 ${formVisability ? "h-72" : "h-0"}`}>
+                <TaskForm setTasks={setTasks}/>
+            </div>
+
+            {tasks_content}
+
         </div>  
     )
   
 }
+
+export default React.memo(Tasks)
