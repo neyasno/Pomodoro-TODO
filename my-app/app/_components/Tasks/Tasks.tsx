@@ -9,6 +9,7 @@ import fetchApi from '@/utils/fetchApi';
 import Button from '../common/Button';
 import { useAppSelector } from '@/store/store';
 import TextInput from '../common/TextInput';
+import ChangeTaskForm from './TaskForm/ChangeTaskForm';
 
 const sortTasks = (tasks: TaskProps[]) => {
     return tasks.sort((a, b) => {
@@ -49,8 +50,17 @@ function Tasks() {
     const [ allTasks , setAllTasks ] = useState<TaskProps[]>([]);
     const [search_text , setSearchText] = useState("")
 
+    const [changeId , setChangeId] = useState("")
+    const [changeTitle , setChangeTitle] = useState("")
+    const [changeText , setChangeText] = useState("")
+    const [changeDate , setChangeDate] = useState("")
+    const [changeSteps , setChangeSteps] = useState(0)
+
 
     const [formVisability , setFormVisability] = useState(false);
+    const [changeFormVisability , setChangeFormVisability] = useState(false);
+
+
     const currentTask= useAppSelector(state => state.time.currentTask)
 
     
@@ -84,6 +94,14 @@ function Tasks() {
                       setTasks={setTasks}
                       steps_amount={task.steps_amount}
                       steps={task.steps}
+                      setDeadline={setChangeDate}
+                      setStepsAmount={setChangeSteps}
+                      setText={setChangeText}
+                      setTitle={setChangeTitle}
+                      setChangeFormVisability = {setChangeFormVisability}
+                      setId = {setChangeId}
+                      setFormVisability={setFormVisability}
+                      changeFormVisability={changeFormVisability}
                       />
             )}
         </ul>
@@ -107,7 +125,6 @@ function Tasks() {
         const newTasks = sortTasksInactiveFirst(allTasks);
         console.log("SORTING:")
         console.log(newTasks)
-        
         setTasks(newTasks)
     }
 
@@ -129,6 +146,10 @@ function Tasks() {
             </div>
             <div className={`flex overflow-hidden transition-all duration-500 ${formVisability ? "h-72" : "h-0"}`}>
                 <TaskForm setTasks={setTasks}/>
+            </div>
+            <div className={`flex overflow-hidden transition-all duration-500 ${changeFormVisability ? "h-72" : "h-0"}`}>
+                <ChangeTaskForm _id={changeId} setTasks={setTasks} deadline={changeDate} setDeadline={setChangeDate} setText={setChangeText}
+                    title={changeTitle} text={changeText} steps_amount={changeSteps} setStepsAmount={setChangeSteps} setTitle={setChangeTitle}/>
             </div>
 
             {tasks_content}

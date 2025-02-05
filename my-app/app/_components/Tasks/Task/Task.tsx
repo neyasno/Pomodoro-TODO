@@ -14,7 +14,15 @@ export type TaskProps = {
     isActive : boolean , 
     steps_amount : number , 
     steps : number ,
-    setTasks : React.Dispatch<React.SetStateAction<TaskProps[]>>
+    setTasks : React.Dispatch<React.SetStateAction<TaskProps[]>>,
+    setTitle: React.Dispatch<React.SetStateAction<string>>,
+    setText: React.Dispatch<React.SetStateAction<string>>,
+    setDeadline: React.Dispatch<React.SetStateAction<string>>,
+    setStepsAmount :  React.Dispatch<React.SetStateAction<number>>,
+    setId : React.Dispatch<React.SetStateAction<string>>,
+    setChangeFormVisability : React.Dispatch<React.SetStateAction<boolean>>,
+    setFormVisability : React.Dispatch<React.SetStateAction<boolean>>,
+    changeFormVisability : boolean
 }
 
 const calculatePeriod = (deadline : string) =>{
@@ -24,7 +32,7 @@ const calculatePeriod = (deadline : string) =>{
     return Math.round( period / (1000 * 60 * 60 * 24));  
 }
 
-export default function Task({_id ,steps , steps_amount,title , text , isActive ,deadline , setTasks}:TaskProps ) {
+export default function Task({_id ,steps , steps_amount,title , changeFormVisability , text , isActive ,deadline , setFormVisability  , setChangeFormVisability , setId, setTasks ,setDeadline , setStepsAmount ,setText ,setTitle}:TaskProps ) {
 
     
     const dispatch = useAppDispatch();
@@ -39,7 +47,7 @@ export default function Task({_id ,steps , steps_amount,title , text , isActive 
 
             console.log("TaskId ==" + _id)
             
-            const response = await fetch("/api/tasks/" , {
+            const response = await fetch("/api/tasks/status" , {
                 method : "PUT" , 
                 headers : { "authorization" : `Bearer ${token}`},
                 body : JSON.stringify({ _id })
@@ -90,6 +98,22 @@ export default function Task({_id ,steps , steps_amount,title , text , isActive 
         dispatch(setCurrentTask(_id))
         dispatch(startTimer())
     }
+
+    const handleChange = (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) =>{
+        e.preventDefault()
+       if(!changeFormVisability){
+            setDeadline(deadline)
+            setStepsAmount(steps_amount)
+            setText(text)
+            setTitle(title)
+            setId(_id)
+            setChangeFormVisability(true)
+            setFormVisability(false)
+       }
+       else{
+        setChangeFormVisability(false)
+       }
+    }
     
 
     return (
@@ -114,6 +138,7 @@ export default function Task({_id ,steps , steps_amount,title , text , isActive 
                 {isActive && 
                 <div className='flex gap-2'>
                     <Button text='Start' handleClick={handleStart}/>
+                    <Button text='Change' handleClick={handleChange}/>
                     <Button text='Finish' handleClick={disableTask}/>
                 </div>
                 }

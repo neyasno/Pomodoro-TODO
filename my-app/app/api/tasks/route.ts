@@ -60,29 +60,34 @@ export async function POST(req : NextRequest) {
 }
 
 export async function PUT(req : NextRequest) {
-  try {
-      await dbConnect();
-
-      const userEmail = await isAuthenticated(req);
-      if (!userEmail) {
-          return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-      }
-
-      const user = await User.findOne({email : userEmail})
-      const body = await req.json();
-      const task_id = body._id
-    
-      const task = user.tasks.find((task : {_id : string}) => task._id.toString() === task_id) as IUser["tasks"][number];
-      task.isActive = false
-      user.save()
-
-      return NextResponse.json(user.tasks, { status: 200 });
-
-
-  } catch (error) {
-      return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
+    try {
+        await dbConnect();
+  
+        const userEmail = await isAuthenticated(req);
+        if (!userEmail) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+  
+        const user = await User.findOne({email : userEmail})
+        const body = await req.json();
+        const task_id = body._id
+      
+        const task = user.tasks.find((task : {_id : string}) => task._id.toString() === task_id) as IUser["tasks"][number];
+        task.deadline = body.deadline
+        task.isActive = true
+        task.steps = body.steps
+        task.steps_amount = body.steps_amount
+        task.text = body.text
+        task.title = body.title
+        user.save()
+  
+        return NextResponse.json(user.tasks, { status: 200 });
+  
+  
+    } catch (error) {
+        return NextResponse.json({ error: `Fetch error: ${error}` }, { status: 500 });
+    }
   }
-}
 
 export async function DELETE(req : NextRequest) {
     try {
